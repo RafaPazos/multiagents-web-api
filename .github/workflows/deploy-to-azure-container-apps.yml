@@ -1,0 +1,57 @@
+name: Deploy to Azure Container Apps
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+env:
+  AZURE_CONTAINER_REGISTRY: "your-acr-name"  # Set this to your ACR name
+  CONTAINER_NAME: "multiagents-web-api"
+  RESOURCE_GROUP: "your-resource-group"      # Set this to your resource group name
+  CONTAINER_APP_NAME: "multiagents-web-api" # Set this to your container app name
+  CONTAINER_APP_ENVIRONMENT: "your-container-app-environment" # Set this to your container app environment
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Log in to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Log in to Azure Container Registry
+      run: az acr login --name ${{ env.AZURE_CONTAINER_REGISTRY }}
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: true
+        tags: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+    - name: Deploy to Azure Container Apps
+      uses: azure/container-apps-deploy-action@v1
+      with:
+        appSourcePath: ${{ github.workspace }}
+        acrName: ${{ env.AZURE_CONTAINER_REGISTRY }}
+        containerAppName: ${{ env.CONTAINER_APP_NAME }}
+        resourceGroup: ${{ env.RESOURCE_GROUP }}
+        imageToBuild: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }}
+        targetPort: 8282
+        ingress: external
+        environmentVariables: |
+          AZURE_KEY=${{ secrets.AZURE_KEY }}
+          AZURE_ENDPOINT_NAME=${{ secrets.AZURE_ENDPOINT_NAME }}
