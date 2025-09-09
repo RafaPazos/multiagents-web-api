@@ -17,17 +17,12 @@ env:
   AZURE_SUBSCRIPTION_ID: ${{ secrets.ACAGENAIWL_AZURE_SUBSCRIPTION_ID }}
   AZURE_TENANT_ID: ${{ secrets.ACAGENAIWL_AZURE_TENANT_ID }}
 
-permissions:
-  id-token: write
-  contents: read
-
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     permissions:
+      id-token: write
       contents: read
-      packages: write
-
     steps:
     - name: 'Checkout GitHub Action'
       uses: actions/checkout@v4
