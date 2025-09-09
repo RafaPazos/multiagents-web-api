@@ -5,6 +5,18 @@ on:
   # Allow manual trigger 
   workflow_dispatch:      
 
+env:
+  REGISTRY_NAME: "rpreucontinfraacr"                    # Replace with your ACR name
+  IMAGE_NAME: "multiagents-web-api"
+  RESOURCE_GROUP: "rg-chat-baseline-switzerlandnorth"            # Replace with your resource group
+  CONTAINER_APP_NAME: "multiagents-web-api"        # Replace with your container app name
+  CONTAINER_APP_ENVIRONMENT: "acaenv-genaiwl" # Replace with your container app environment
+
+  AZURE_CLIENT_ID: ${{ secrets.ACAGENAIWL_AZURE_CLIENT_ID }}
+  #AZURE_CLIENT_SECRET: ${{ secrets.ACAGENAIWL_AZURE_CLIENT_SECRET }}
+  AZURE_SUBSCRIPTION_ID: ${{ secrets.ACAGENAIWL_AZURE_SUBSCRIPTION_ID }}
+  AZURE_TENANT_ID: ${{ secrets.ACAGENAIWL_AZURE_TENANT_ID }}
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
