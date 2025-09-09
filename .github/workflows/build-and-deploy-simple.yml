@@ -12,6 +12,12 @@ env:
   CONTAINER_APP_NAME: "multiagents-web-api"        # Replace with your container app name
   CONTAINER_APP_ENVIRONMENT: "acaenv-genaiwl" # Replace with your container app environment
 
+  AZURE_CLIENT_ID: ${{ secrets.ACAGENAIWL_AZURE_CLIENT_ID }}
+  #AZURE_CLIENT_SECRET: ${{ secrets.ACAGENAIWL_AZURE_CLIENT_SECRET }}
+  AZURE_SUBSCRIPTION_ID: ${{ secrets.ACAGENAIWL_AZURE_SUBSCRIPTION_ID }}
+  AZURE_TENANT_ID: ${{ secrets.ACAGENAIWL_AZURE_TENANT_ID }}
+
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -26,9 +32,9 @@ jobs:
     - name: 'Login via Azure CLI'
       uses: azure/login@v2
       with:
-        client-id: ${{ secrets.ACAGENAIWL_AZURE_CLIENT_ID }}
-        tenant-id: ${{ secrets.ACAGENAIWL_AZURE_TENANT_ID }}
-        subscription-id: ${{ secrets.ACAGENAIWL_AZURE_SUBSCRIPTION_ID }}
+        client-id: ${{env.AZURE_CLIENT_ID}}
+        tenant-id: ${{ env.AZURE_TENANT_ID }}
+        subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
 
     - name: 'Build and push image'
       uses: azure/docker-login@v1
