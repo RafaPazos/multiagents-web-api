@@ -46,7 +46,9 @@ jobs:
 
     - name: Build and push Docker image
       run: |
-        docker build . -t ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
+        docker build . \
+          --build-arg AZURE_KEY=${{ secrets.AZURE_KEY }} \
+          -t ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
         docker push ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
     - name: 'Deploy to Azure Container Apps'
