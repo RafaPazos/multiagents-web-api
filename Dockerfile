@@ -1,5 +1,12 @@
 FROM python:3.11-slim
 
+# Define build arguments
+ARG AZURE_KEY
+ARG TAVILY_API_KEY
+
+ENV AZURE_KEY=${AZURE_KEY}
+ENV TAVILY_API_KEY=${TAVILY_API_KEY}
+
 WORKDIR /app
 
 # Install system dependencies

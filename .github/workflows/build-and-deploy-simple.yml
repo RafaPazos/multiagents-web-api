@@ -18,6 +18,7 @@ env:
 
   ACR_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
   ACR_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+  TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}  
 
 jobs:
   build-and-deploy:
@@ -48,6 +49,7 @@ jobs:
       run: |
         docker build . \
           --build-arg AZURE_KEY=${{ secrets.AZURE_KEY }} \
+          --build-arg TAVILY_API_KEY=${{ secrets.TAVILY_API_KEY }}
           -t ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
         docker push ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
