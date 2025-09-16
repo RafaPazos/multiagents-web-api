@@ -47,10 +47,7 @@ jobs:
 
     - name: Build and push Docker image
       run: |
-        docker build . \
-          --build-arg AZURE_KEY=${{ secrets.AZURE_KEY }} \
-          --build-arg TAVILY_API_KEY=${{ secrets.TAVILY_API_KEY }}
-          -t ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
+        docker build . -t ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
         docker push ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
     - name: 'Deploy to Azure Container Apps'
@@ -63,4 +60,4 @@ jobs:
             --image ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }} \
             --set-env-vars \
               AZURE_KEY="${{ secrets.AZURE_KEY }}" \
-              AZURE_ENDPOINT_NAME="${{ secrets.AZURE_ENDPOINT_NAME }}"
+              TAVILY_API_KEY="${{ secrets.TAVILY_API_KEY }}" 
